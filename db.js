@@ -19,7 +19,7 @@ require("dotenv").config();
 // });
 
 // Konfigurasi connection pool ke database Railway
-const dbRailwayPool = mysql.createPool({
+const db = mysql.createPool({
   host: process.env.DB_HOST, // railway host
   user: process.env.DB_USER, // username
   password: process.env.DB_PASSWORD, // password
@@ -32,7 +32,7 @@ const dbRailwayPool = mysql.createPool({
 });
 
 // Cek koneksi dengan pool
-dbRailwayPool.getConnection((err, connection) => {
+db.getConnection((err, connection) => {
   if (err) {
     console.error("Gagal terhubung ke database Railway:", err.message);
     process.exit(1);
