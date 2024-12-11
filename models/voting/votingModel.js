@@ -52,33 +52,26 @@ exports.updateVotingStatus = (id, status, callback) => {
 };
 
 exports.resetPemira = (callback) => {
-  const tables = ["votes", "voters", "visions", "missions", "candidates"];
+  // Urutan penghapusan yang mempertimbangkan foreign key
+  const deleteSequence = [
+    "votes", // Hapus vote terlebih dahulu
+    "voters", // Kemudian hapus voter
+    "visions", // Hapus visi
+    "missions", // Hapus misi
+    "candidates", // Terakhir hapus kandidat
+  ];
 
-  // Menonaktifkan foreign key checks
+  // Nonaktifkan foreign key checks
   db.query("SET FOREIGN_KEY_CHECKS = 0;", (err) => {
     if (err) {
       console.error("Gagal menonaktifkan FOREIGN_KEY_CHECKS:", err);
       return callback(err, null);
     }
 
-    // Fungsi untuk menjalankan truncate per tabel
-    const truncateTable = (table) =>
-      new Promise((resolve, reject) => {
-        db.query(`TRUNCATE TABLE ${table};`, (err) => {
-          if (err) {
-            console.error(`Gagal mereset tabel ${table}:`, err);
-            reject(err);
-          } else {
-            console.log(`Berhasil mereset tabel ${table}`);
-            resolve();
-          }
-        });
-      });
-
-    // Eksekusi truncate untuk setiap tabel
-    Promise.all(tables.map((table) => truncateTable(table)))
-      .then(() => {
-        // Mengaktifkan kembali foreign key checks
+    // Fungsi rekursif untuk menghapus data
+    const deleteTablesRecursively = (tables) => {
+      if (tables.length === 0) {
+        // Semua tabel sudah dihapus
         db.query("SET FOREIGN_KEY_CHECKS = 1;", (err) => {
           if (err) {
             console.error("Gagal mengaktifkan FOREIGN_KEY_CHECKS:", err);
@@ -86,12 +79,39 @@ exports.resetPemira = (callback) => {
           }
           callback(null, { message: "Semua data Pemira berhasil dihapus." });
         });
-      })
-      .catch((err) => {
-        // Mengaktifkan kembali foreign key checks meski ada error
-        db.query("SET FOREIGN_KEY_CHECKS = 1;", () => {
-          callback(err, null);
-        });
+        return;
+      }
+
+      const currentTable = tables[0];
+
+      db.query(`DELETE FROM ${currentTable};`, (err) => {
+        if (err) {
+          console.error(
+            `Gagal menghapus data dari tabel ${currentTable}:`,
+            err
+          );
+          return callback(err, null);
+        }
+
+        // Reset auto increment
+        db.query(
+          `ALTER TABLE ${currentTable} AUTO_INCREMENT = 1;`,
+          (resetErr) => {
+            if (resetErr) {
+              console.error(
+                `Gagal mereset AUTO_INCREMENT untuk ${currentTable}:`,
+                resetErr
+              );
+            }
+
+            // Lanjut ke tabel berikutnya
+            deleteTablesRecursively(tables.slice(1));
+          }
+        );
       });
+    };
+
+    // Mulai proses penghapusan
+    deleteTablesRecursively(deleteSequence);
   });
 };
