@@ -13,8 +13,14 @@ const visionsRoutes = require("./routes/visions/visionsRoutes");
 const votesRoutes = require("./routes/votes/votesRoutes");
 
 // Opsi CORS untuk mengizinkan hanya localhost:3000
+// const corsOptions = {
+//   origin: "http://localhost:3000",
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Metode yang diizinkan
+//   credentials: true, // Izinkan cookies
+//   optionsSuccessStatus: 200, // Untuk beberapa versi lama browsers
+// };
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://pemirapmkfsm.up.railway.app/",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Metode yang diizinkan
   credentials: true, // Izinkan cookies
   optionsSuccessStatus: 200, // Untuk beberapa versi lama browsers
