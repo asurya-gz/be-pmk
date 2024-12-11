@@ -20,7 +20,7 @@ const votesRoutes = require("./routes/votes/votesRoutes");
 //   optionsSuccessStatus: 200, // Untuk beberapa versi lama browsers
 // };
 const corsOptions = {
-  origin: "https://pemirapmkfsm.up.railway.app/",
+  origin: "https://pemirapmkfsm.up.railway.app",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Metode yang diizinkan
   credentials: true, // Izinkan cookies
   optionsSuccessStatus: 200, // Untuk beberapa versi lama browsers
