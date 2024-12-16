@@ -1,16 +1,19 @@
 const VoterModel = require("../../models/voters/votersModel");
 
 exports.addVoter = (req, res) => {
-  const { nama, nim, angkatan, jurusan } = req.body;
+  const { nama, nim, angkatan, jurusan, email } = req.body;
 
   // Memanggil model untuk membuat voter
-  VoterModel.createVoter({ nama, nim, angkatan, jurusan }, (err, result) => {
-    if (err) {
-      return res.status(400).json({ message: err.message });
-    }
+  VoterModel.createVoter(
+    { nama, nim, angkatan, jurusan, email },
+    (err, result) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      }
 
-    return res.status(201).json(result);
-  });
+      return res.status(201).json(result);
+    }
+  );
 };
 
 exports.getAllVoters = (req, res) => {

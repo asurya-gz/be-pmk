@@ -1,24 +1,25 @@
 const db = require("../../db.js");
 
-// Fungsi untuk membuat data voter
 exports.createVoter = (voterData, callback) => {
-  const { nama, nim, angkatan, jurusan } = voterData;
+  const { nama, nim, angkatan, jurusan, email } = voterData;
 
   // Validasi input
-  if (!nama || !nim || !angkatan || !jurusan) {
+  if (!nama || !nim || !angkatan || !jurusan || !email) {
     return callback(
-      new Error("Semua kolom (nama, nim, angkatan, jurusan) harus diisi"),
+      new Error(
+        "Semua kolom (nama, nim, angkatan, jurusan, email) harus diisi"
+      ),
       null
     );
   }
 
   // Query untuk memasukkan data voter ke database
   const query = `
-    INSERT INTO voters (nama, nim, angkatan, jurusan) 
-    VALUES (?, ?, ?, ?)
+    INSERT INTO voters (nama, nim, angkatan, jurusan, email) 
+    VALUES (?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [nama, nim, angkatan, jurusan], (err, result) => {
+  db.query(query, [nama, nim, angkatan, jurusan, email], (err, result) => {
     if (err) {
       console.error("Gagal membuat voter:", err);
       return callback(err, null);
@@ -30,6 +31,7 @@ exports.createVoter = (voterData, callback) => {
       nim,
       angkatan,
       jurusan,
+      email,
       message: "Data voter berhasil ditambahkan",
     });
   });

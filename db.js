@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 require("dotenv").config();
 
-// // Konfigurasi koneksi ke database
+// // // Konfigurasi koneksi ke database
 // const db = mysql.createConnection({
 //   host: process.env.DB_HOST,
 //   user: process.env.DB_USER,
@@ -31,7 +31,7 @@ const db = mysql.createPool({
   queueLimit: 0, // Batas antrian (0 berarti tidak terbatas)
 });
 
-// Cek koneksi dengan pool
+// // Cek koneksi dengan pool
 db.getConnection((err, connection) => {
   if (err) {
     console.error("Gagal terhubung ke database Railway:", err.message);
